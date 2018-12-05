@@ -14,7 +14,7 @@ with open('input.txt',mode='r') as f:
       (x, y) = (poly[i], poly[i+1])
 
       if ord(x) ^ ord(y) == 0x20:
-        poly = poly[:i] + poly[i+2::]
+        poly = poly[:i] + poly[i+2:]
         if i > 0:
           i -= 1
       else:
