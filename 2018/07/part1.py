@@ -20,7 +20,7 @@ with open('input.txt', mode='r') as f:
     prereqs[step].append(prereq)
 
 while prereqs:
-  possible_steps = list(map(lambda f: f[0], filter(lambda x: len(x[1])==0, prereqs.items())))
+  possible_steps = [x[0] for x in prereqs.items() if len(x[1])==0]
   possible_steps.sort()
 
   next_step = possible_steps[0]
