@@ -36,6 +36,7 @@ class Cart:
         self.d = d
         self.nextturn = Direction.Left
         self.name = name
+        self.dead = False
     def __repr__(self):
         return "({},{} @ {})".format(self.x, self.y, d2s(self.d))
     def tick(self):
@@ -67,17 +68,19 @@ field = [[' ' for y in range(150)] for x in range(150)]
 carts = []
 
 def do_tick():
-    for cart in carts:
+    for cart in [x for x in carts if not x.dead]:
         cart.tick()
         coll = check_colission()
         if coll:
-            print('Collision after tick {} at ({},{})'.format(tick, coll[0], coll[1]))
-            exit(0)
+            c = [x for x in carts if not x.dead]
+#            print('Collision after tick {} at ({},{}), {} carts left'.format(tick, coll[0], coll[1], len(c)))
 
 def check_colission():
-    for c in carts:
-        for d in [x for x in carts if x != c]:
+    for c in [x for x in carts if not x.dead]:
+        for d in [x for x in carts if x != c and not x.dead]:
             if c.x == d.x and c.y == d.y: 
+                c.dead = True
+                d.dead = True
                 return (c.x, c.y)
 
     return None
@@ -104,10 +107,12 @@ with open('input.txt', mode='r') as f:
 #    print("".join(row))
 
 tick = 0
-while True:
+while len([x for x in carts if not x.dead]) > 1:
     # sort by x and y position
     carts.sort(key = lambda c: (c.y, c.x))
     do_tick()
     tick += 1
 
+lastcart = [x for x in carts if not x.dead][0]
+print("{},{}".format(lastcart.x, lastcart.y))
 
