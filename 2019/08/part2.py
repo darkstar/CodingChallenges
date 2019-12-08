@@ -10,11 +10,7 @@ while len(pixeldata) > 0:
     layerdata = pixeldata[:layersize]
     pixeldata = pixeldata[layersize:]
 
-    for x in range(layersize):
-        px = layerdata[x]
-        cur = image[x]
-        if cur == '2':
-            image[x] = px
+    image = list(map(lambda x: x[1] if x[0] == '2' else x[0], zip(image, layerdata)))
 
 for x in range(6):
     print("".join(map(lambda c: '#' if c == '1' else ' ', image[25 * x:25 * (x+1)])))
