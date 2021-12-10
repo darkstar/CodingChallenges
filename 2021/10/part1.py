@@ -22,7 +22,7 @@ with open("input.txt", mode="r") as f:
 #"[[<[([]))<([[{}[[()]]]","[{[{({}]{}}([{[{{{}}([]","{<[[]]>}<{[{[{[]{()[[[]","[<(<(<(<{}))><([]([]()",
 #"<{([([[(<>()){}]>(<<{{","<{([{{}}[<[[[<>{}]]]>[]]"]
 
-points = list(map(lambda f: points(f), code))
+points = list(map(points, code))
 total = reduce(lambda a, b: a + b, points, 0)
 
 print(total)

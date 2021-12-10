@@ -1,6 +1,6 @@
 from functools import reduce
 
-def corrupt(l):
+def noncorrupt(l):
     valid = { '<': '>', '(': ')', '{': '}', '[': ']' }
     stack = []
     for c in l:
@@ -11,8 +11,8 @@ def corrupt(l):
             tos = stack.pop()
             #check if opening and closing elements match
             if c != valid[tos]:
-                return True
-    return False
+                return False
+    return True
 
 def points(l):
     valid = { '<': '>', '(': ')', '{': '}', '[': ']' }
@@ -39,8 +39,8 @@ with open("input.txt", mode="r") as f:
 #code = [ "[({(<(())[]>[[{[]{<()<>>", "[(()[<>])]({[<{<<[]>>(", "(((({<>}<{<{<>}{[]{[]{}",
 #        "{<[[]]>}<{[{[{[]{()[[[]", "<{([{{}}[<[[[<>{}]]]>[]]" ]
 
-code = list(filter(lambda f: not corrupt(f), code))
+code = list(filter(noncorrupt, code))
 
-points = sorted(list(map(lambda f: points(f), code)))
+points = sorted(list(map(points, code)))
 
 print(points[len(points)//2])
