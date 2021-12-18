@@ -1,5 +1,12 @@
 from functools import reduce
 
+# explode is tricky to do right if you parse everything into a tree structure
+# got this tip from a friend: parse it into a list of pairs with the nesting
+# depth as second element. that way explode is just a concatenation of
+# sublists with insertion of a new element. It makes magnitude calculation a
+# bit more complicated though but that's a small price to pay for not having
+# to deal with explode on trees (which would require lookahead or global state)
+
 def parse(s):
   level = 0
   res = []
