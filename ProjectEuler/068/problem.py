@@ -1,7 +1,5 @@
 import math
 
-nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
 #
 #         d
 #          \
@@ -12,47 +10,56 @@ nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 #      j    g
 #            \
 #             h
+
+# the indices for the unique string that defines the ring
+idx = [ 0, 1, 2, 3, 2, 4, 5, 4, 6, 7, 6, 8, 9, 8, 1 ]
+
 best = 0
 
-# yes this should have been done by dynamic programming,
-# but it's 2 AM and I'm tired and lazy ;-)
+def isvalid(ring):
+    if len(ring) <= 3:
+        return True
+    magic_sum = ring[0] + ring[1] + ring[2]
+    if len(ring) >= 5:
+        if ring[2] + ring[3] + ring[4] != magic_sum or ring[3] < ring[0]:
+            return False
+    if len(ring) >= 7:
+        if ring[4] + ring[5] + ring[6] != magic_sum or ring[5] < ring[0]:
+            return False
+    if len(ring) >= 9:
+        if ring[6] + ring[7] + ring[8] != magic_sum or ring[7] < ring[0]:
+            return False
+    if len(ring) == 10:
+        if ring[8] + ring[9] + ring[1] != magic_sum or ring[9] < ring[0]:
+            return False
+    return True
 
-for a in nums:
-    remaining1 = [x for x in nums if x != a]
-    for b in remaining1:
-        remaining2 = [x for x in remaining1 if x != b]
-        for c in remaining2:
-            remaining3 = [x for x in remaining2 if x != c]
-            magic_sum = a + b + c
-            for d in remaining3:
-                # we want a to be the lowest number
-                if d > a:
-                    remaining4 = [x for x in remaining3 if x != d]
-                    e = magic_sum - c - d
-                    # do we have the number required?
-                    if e in remaining4:
-                        remaining5 = [x for x in remaining4 if x != e]
-                        for f in remaining5:
-                            if f > a:
-                               remaining6 = [x for x in remaining5 if x != f]
-                               g = magic_sum - e - f
-                               if g in remaining6:
-                                   remaining7 = [x for x in remaining6 if x != g]
-                                   for h in remaining7:
-                                       if h > a:
-                                           remaining8 = [x for x in remaining7 if x != h]
-                                           i = magic_sum - g - h
-                                           if i in remaining8:
-                                               remaining9 = [x for x in remaining8 if x != i]
-                                               assert(len(remaining9) == 1)
-                                               j = remaining9[0]
-                                               if j + i + b == magic_sum and j > a:
-                                                   s = "{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}".format(a, b, c,
-                                                                                               d, c, e,
-                                                                                               f, e, g,
-                                                                                               h, g, i,
-                                                                                               j, i, b)
-                                                   if len(s) == 16 and int(s) > best:
-                                                       best = int(s)
+def search(ring, digits):
+    global best
+
+    # check if the n-gon ring meets all criteria
+    # if not, prune the search tree here
+    if not isvalid(ring):
+        return
+
+    # if the ring has length 10, we have found a candidate
+    if len(ring) == 10:
+        s = "".join([ str(ring[i]) for i in idx])
+        if len(s) == 16 and int(s) > best:
+            best = int(s)
+        return
+
+    # assume at least one digit left to pick
+    assert(len(digits) > 0)
+
+    # go through all digits and form a new ring with them
+    for i in range(len(digits)):
+        # take a digit from the list
+        d = digits[i]
+        rest = digits[:i] + digits[i+1:]
+        # recursively descend
+        search(ring + [d], rest)
+
+search([], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
 print(best)
