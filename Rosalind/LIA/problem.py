@@ -1,25 +1,19 @@
-# array indices: aa=0, Aa=1, AA=2
-#      A:
-#      0  1  2
-#B: 0  .  .  .
-#   1  .  .  .
-#   2  .  .  .
-#
+import math
 
 def solution(ifile):
     with open(ifile, mode="r") as f:
-        s = [int(x) for x in f.readline().strip().split()]
+        k, n = [int(x) for x in f.readline().strip().split()]
 
-    # we start with Tom
-    alleles = { "AbBb": 1 }
+    # number of offspring in gen. k:
+    total = 2**k
 
-    for gen in range(s[0]):
-        newalleles = {}
-        for k, v in alleles.items():
-            # merge the offspring
-            offspring(v, k, "AaBb", newalleles)
-        print("after gen {}: {}".format(gen, newalleles))
-        alleles = newalleles
+    # for x of the offspring to have alleles Aa Bb
+    # chances are (n choose x) times 1/4^n (for the correct alleles)
+    # times 3/4^n (for the incorrect alleles)
+    probs = [ math.comb(total, x) * pow(1/4, x) * pow(3/4, total - x) for x in range(total + 1) ]
 
-solution("sample1.txt")
-#solution("dataset1.txt")
+    # we only want the probabilities that *at least* N offspring have those alleles
+    print(sum(probs[n:]))
+
+#solution("sample1.txt")
+solution("dataset1.txt")
